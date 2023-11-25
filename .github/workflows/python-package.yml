@@ -11,6 +11,7 @@ on:
 
 env:
   POSTGRES_PASSWORD: password
+  DATABASE_URL: "postgres://postgres:password@127.0.0.1:5332/newts?sslmode=disable"
 
 jobs:
   build:
@@ -30,13 +31,20 @@ jobs:
     - name: Install dependencies
       run: |
         cd backend
-        docker-compose up -d
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    - name: Create database
+      run: |
+        docker-compose up -d
+    - name: Initialize database
+      uses: 'Homebrew/actions/setup-homebrew@master'
+      run: |
+        brew install dbmate
+        dbmate --wait --no-dump-schema -u $DATABASE_URL_TEST up
     - name: Test with pytest
       run: |
         pytest
