@@ -1,7 +1,7 @@
 from db_conn import conn
 import psycopg2
 from psycopg2.errorcodes import UNIQUE_VIOLATION
-from flask import request, Blueprint, Response
+from flask import request, Blueprint
 import bcrypt
 import json
 
