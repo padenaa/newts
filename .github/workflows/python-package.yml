@@ -20,11 +20,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: isbang/compose-action@v1.5.1
-      with:
-        compose-file: "./backend/docker-compose.yml"
-      env:
-        POSTGRES_PASSWORD: "test"
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -32,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd backend
-        docker-compose
+        docker-compose up -d
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
