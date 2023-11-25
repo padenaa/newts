@@ -1,5 +1,4 @@
 from db_conn import conn
-import psycopg2
 from flask import request, Blueprint
 import json
 
