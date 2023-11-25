@@ -45,7 +45,7 @@ jobs:
     - name: Run dbmate initialization
       run: |
         brew install dbmate
-        dbmate --wait --no-dump-schema -u $DATABASE_URL_TEST up
+        dbmate --wait --no-dump-schema -u $DATABASE_URL up
     - name: Test with pytest
       run: |
         pytest
