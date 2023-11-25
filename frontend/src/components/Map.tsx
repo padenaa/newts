@@ -18,7 +18,6 @@ function giveStars(n: number) {
     return res
 }
   
-
 const StarRating = () => {
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(0);
