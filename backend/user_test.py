@@ -5,12 +5,23 @@ import random
 
 
 def test_register_route():
+    lang_response = app.test_client().post(
+        '/lang',
+        data=json.dumps({
+            "name": "Language",
+        }),
+        headers={"Content-Type": "application/json"})
+
+    assert lang_response.status_code == 201
+    lang_id = json.loads(lang_response.data.decode('utf-8')).get('id')
+    assert lang_id is not None
+
     response = app.test_client().post(
         '/register',
         data=json.dumps({
             "username": "test" + str(random.randint(0, 1000000000)),
             "password": "test",
-            "language": 1,
+            "language": lang_id,
         }),
         headers={"Content-Type": "application/json"})
     assert response.status_code == 201
@@ -18,13 +29,23 @@ def test_register_route():
 
 
 def test_login_route():
+    lang_response = app.test_client().post(
+        '/lang',
+        data=json.dumps({
+            "name": "Language",
+        }),
+        headers={"Content-Type": "application/json"})
+    assert lang_response.status_code == 201
+    lang_id = json.loads(lang_response.data.decode('utf-8')).get('id')
+    assert lang_id is not None
+
     randnum = str(random.randint(0, 1000000000))
     register_response = app.test_client().post(
         '/register',
         data=json.dumps({
             "username": "test" + randnum,
             "password": "test",
-            "language": 1,
+            "language": lang_id,
         }),
         headers={"Content-Type": "application/json"})
     assert register_response.status_code == 201
