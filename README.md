@@ -12,3 +12,15 @@ cd backend
 docker-compose up -d
 ```
 The database should now be running at localhost:5332, based on how this is configured for your machine.
+
+Next, install [dbmate](https://github.com/amacneil/dbmate).
+To create new migrations, run
+```sh
+dbmate new insert_migration_name
+```
+and update the file created in /backend/db/migrations.
+Once finished updating this file, run
+```sh
+dbmate up
+```
+to apply the migrations.
