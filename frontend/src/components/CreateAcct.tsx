@@ -7,13 +7,21 @@ function CreateAcctComp () {
     const [user, setUser] = useState("")
     const [pass, setPass] = useState("")
     const [lang, setLang] = useState(-1)
-    const [langList, setLangList] = useState([])
+    const [langList, setLangList] = useState<{id: number, name: string}[]>([])
     useEffect(()=>{
         getData("http://127.0.0.1:5000/langs").then((res: any) => {
             console.log(res)
-            setLangList(res.langs)
+            let redLangs = []
+            for (const lang of res.langs) {
+                if (redLangs.some((value) => value.name === lang.name)) {
+                    continue;
+                } else {
+                    redLangs.push(lang);
+                }
+            }
+            setLangList(redLangs)
         });
-    })
+    }, [setLangList])
     const onSubmit = () => {
         postData("http://127.0.0.1:5000/register", {
                  username: user,
@@ -48,7 +56,7 @@ function CreateAcctComp () {
                 </div>
                 <select className="form-select mb-3" aria-label="Default select example" onChange={onLanguageChange} defaultValue="0">
                     <option value="0" disabled={true}>Choose language</option>
-                    {langList.map((lang)=>{return <option value={lang[0]}>{lang[1]}</option>})}
+                    {langList.map((lang)=>{return <option value={lang.id}>{lang.name}</option>})}
                 </select>
 
             <button className="button btn-dark" type="button" onClick={onSubmit}>Create Account</button>
