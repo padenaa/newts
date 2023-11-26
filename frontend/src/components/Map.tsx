@@ -80,36 +80,36 @@ const StarRating = (props: {locationId: number, setModalOn: any, setMarkers: any
 
 
 function Map(props: {markers: MarkerInfo[], setMarkers: any}) {
-    const [message, setMessage] = useState("")
-    const [phone, setPhone] = useState("")
     const [selectedId, setSelectedId] = useState(-1)
     const [modalOn, setModalOn] = useState(false)
     const [selectedRatingId, setSelectedRatingId] = useState(-1)
     const [ratingModalOn, setRatingModalOn] = useState(false)
     let markerMap = props.markers
 
-    const onSubmitContact = () => {
-        postData("http://127.0.0.1:5000/contact", {
-                 message: message,
-                 locationId: selectedId,
-                 userId: localStorage.getItem('id'),
-                 phoneNumber: phone
-        }).then((res: any) => {
-            console.log(res)
-            setModalOn(false)
-        });
-    }
-
-    function onPhone(e: BaseSyntheticEvent){
-        setPhone(e.target.value)
-    }
-
-    function onMessage(e: BaseSyntheticEvent){
-        setMessage(e.target.value)
-    }
-
     function ContactModal(){
-        return (
+        const [message, setMessage] = useState("")
+        const [phone, setPhone] = useState("")
+        const onPhone = (e: BaseSyntheticEvent) => {
+            setPhone(e.target.value)
+        }
+
+        function onMessage(e: BaseSyntheticEvent){
+            setMessage(e.target.value)
+        }
+
+        const onSubmitContact = () => {
+            postData("http://127.0.0.1:5000/contact", {
+                     message: message,
+                     locationId: selectedId,
+                     userId: localStorage.getItem('id'),
+                     phoneNumber: phone
+            }).then((res: any) => {
+                console.log(res)
+                setModalOn(false)
+            });
+        }
+
+       return (
             <div className="modal" id="contactModal" tabIndex={-1} role="dialog" style={{display: "inline-block"}}>
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
@@ -121,8 +121,8 @@ function Map(props: {markers: MarkerInfo[], setMarkers: any}) {
                     </div>
                     <div className="modal-body">
                     <div className="form-group">
-                        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" className="form-control is-lgreen mb-3" id="floatingInput" placeholder="123-456-7890" autoCorrect='on' onClick={onPhone}/>
-                        <textarea className="form-control" id="exampleFormControlTextarea1" rows={3} placeholder="I'd like to schedule..." onClick={onMessage}></textarea>
+                        <input type="tel" pattern="[0-9]{10}" className="form-control is-lgreen mb-3" id="floatingInput" placeholder="11234567890" autoCorrect='on' onChange={onPhone} value={phone} />
+                        <textarea className="form-control" id="exampleFormControlTextarea1" rows={3} placeholder="I'd like to schedule..." onChange={onMessage} value={message}></textarea>
                     </div>
 
                     </div>
