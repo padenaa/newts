@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { BaseSyntheticEvent, useState } from "react";
 import './Map.css'
-import { postData } from '../helper'
+import { getData, postData } from '../helper'
 
 interface MarkerInfo {
     id: number,
@@ -21,10 +21,41 @@ function giveStars(n: number) {
     }
     return res
 }
-  
-const StarRating = () => {
+
+const StarRating = (props: {locationId: number, setModalOn: any, setMarkers: any}) => {
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(0);
+
+    const submitRating = (index: number) => {
+        setRating(index);
+        postData("http://127.0.0.1:5000/rating", {
+            userId: localStorage.getItem("id"),
+            rating: index,
+            locationId: props.locationId,
+        }).then((res) => {
+            getData(`http://127.0.0.1:5000/avg_rating?locationId=${props.locationId}`).then((res) => {
+                props.setMarkers((prevMap: MarkerInfo[]) => {
+                    let newMap = [...prevMap];
+
+                    for (const i in newMap) {
+                        if (newMap[i].id === props.locationId) {
+                            newMap[i] = {
+                                id: prevMap[i].id,
+                                coord: prevMap[i].coord,
+                                rating: res.avg_rating,
+                                name: prevMap[i].name,
+                                langs: prevMap[i].langs,
+                            }
+                        }
+                    }
+
+                    return newMap;
+                });
+            })
+            props.setModalOn(false);
+        });
+    }
+
     return (
       <div className="star-rating">
         {[...Array(5)].map((star, index) => {
@@ -35,7 +66,7 @@ const StarRating = () => {
               key={index}
               className={index <= (hover || rating) ? "on" : "off"}
               style={{backgroundColor: "transparent", border: "none", outline: "none", cursor: "pointer"}}
-              onClick={() => setRating(index)}
+              onClick={() => submitRating(index)}
               onMouseEnter={() => setHover(index)}
               onMouseLeave={() => setHover(rating)}
             >
@@ -48,7 +79,7 @@ const StarRating = () => {
   };
 
 
-function Map(props: {markers: MarkerInfo[]}) {
+function Map(props: {markers: MarkerInfo[], setMarkers: any}) {
     const [message, setMessage] = useState("")
     const [phone, setPhone] = useState("")
     const [selectedId, setSelectedId] = useState(-1)
@@ -116,14 +147,10 @@ function Map(props: {markers: MarkerInfo[]}) {
                         </button>
                     </div>
                     <div className="modal-body">
-                    <div className="form-group text-start">
-                        <h6 className="modal-title mb-3" id="exampleModalLabel">How well does this business accomodate your language?</h6>
-                        <StarRating />
-                    </div>
-
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="button" style={{backgroundColor:"#AAB29F"}}>Submit</button>
+                        <div className="form-group text-start">
+                            <h6 className="modal-title mb-3" id="exampleModalLabel">How well does this business accomodate your language?</h6>
+                            <StarRating locationId={selectedRatingId} setModalOn={setRatingModalOn} setMarkers={props.setMarkers} />
+                        </div>
                     </div>
                     </div>
                 </div>
