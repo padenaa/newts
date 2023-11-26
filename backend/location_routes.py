@@ -141,3 +141,23 @@ def markers():
             known_languages[row[4]] if row[4] in known_languages else []
         } for row in all_locations]
     }, 200
+
+
+@location_routes.route('/location', methods=['POST'])
+def location():
+    if request.method == 'POST':
+        data = json.loads(request.data.decode("utf-8"))
+        if (data["name"] is None) or (data["longitude"]
+                                      is None) or (data["latitude"] is None):
+            return {"error": "insufficient data provided"}, 400
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO locations(name, latitude, longitude, map_id) VALUES (%s, %s, %s, %s) RETURNING id;",
+            (data["name"], data["latitude"], data["longitude"], None))
+
+        id_data = cursor.fetchone()
+        conn.commit()
+        if (id_data is None) or (len(id_data) < 1):
+            return {"error": "error creating, try again"}, 400
+        else:
+            return {"id": id_data[0]}, 201
