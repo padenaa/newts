@@ -20,4 +20,4 @@ def test_langs_route():
         '/langs',
         headers={"Content-Type": "application/json"})
     assert response.status_code == 200
-    assert json.loads(response.data.decode('utf-8'))[0][1] == "Spanish"
+    assert json.loads(response.data.decode('utf-8'))[0]['1'] == "Spanish"
