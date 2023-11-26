@@ -39,3 +39,16 @@ pip install -r requirements.txt
 python app.py
 ```
 and you should have the backend running!
+
+## Starting the frontend
+
+To start the frontend, you must have Node installed.
+Navigate to the frontend fold and install all dependencies:
+```sh
+npm run install
+```
+and start up the frontend on localhost:
+```sh
+npm run dev
+```
+
