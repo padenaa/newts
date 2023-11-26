@@ -8,12 +8,13 @@ interface AccountInfo {
 }
 
 function CreateAcctComp () {
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     const [user, setUser] = useState("")
     const [pass, setPass] = useState("")
     const [lang, setLang] = useState(-1)
-    async function onSubmit() {
-        let response = await fetch("localhost:5000/register", {
+    const onSubmit = () => {
+        console.log(user, pass, lang)
+        fetch("http://127.0.0.1:5000/register", {
              method: "POST",
              body: JSON.stringify({
                  username: user,
@@ -21,12 +22,13 @@ function CreateAcctComp () {
                  language: lang
              }),
              headers: {
-                 "Content-type": "application/json; charset=UTF-8"
+                 "Content-type": "application/json; charset=UTF-8",
+                 "Access-Control-Allow-Origin": "*",
              }
-         });
-        let resJson = await response.json();
-        localStorage.setItem('id',resJson?.id);
-        navigate('/app', { replace: true });
+         }).then((res) => console.log(res));
+        //let resJson = await response.json();
+        //localStorage.setItem('id',resJson?.id);
+        //navigate('/app', { replace: true });
      }
 
     const onUsernameChange = (data: BaseSyntheticEvent) => {
@@ -39,7 +41,7 @@ function CreateAcctComp () {
         setLang(data?.target?.value)
     }
     return (
-        <div className='text-start' onSubmit={() => onSubmit()}>
+        <form className='text-start'>
             <h5 className="card-title">Create your Newts account</h5>
                 <div className="form-floating mb-3">
                     <input type="text" className="form-control is-lgreen" id="floatingInput" placeholder="john.doe" onChange={onUsernameChange}/>
@@ -51,13 +53,13 @@ function CreateAcctComp () {
                 </div>
                 <select className="form-select mb-3" aria-label="Default select example" onChange={onLanguageChange} defaultValue="0">
                     <option value="0" disabled={true}>Choose language</option>
-                    <option value="1">English</option>
+                    <option value="1">spanish</option>
                     <option value="2">British</option>
                     <option value="3">Australian</option>
                 </select>
 
-            <button className='button' type="submit">Create Account</button>
-        </div>
+            <button className="button" type="button" onClick={onSubmit}>Create Account</button>
+        </form>
     )
 }
 
