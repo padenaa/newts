@@ -24,3 +24,18 @@ Once finished updating this file, run
 dbmate up
 ```
 to apply the migrations.
+
+## Starting the backend
+
+To start the backend, you must have Python 3.9 installed.
+Start a virtual environment if desired:
+```sh
+python -m venv env
+./env/Scripts/activate
+```
+and install all dependencies to start the project:
+```sh
+pip install -r requirements.txt
+python app.py
+```
+and you should have the backend running!
