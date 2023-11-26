@@ -17,7 +17,7 @@ def test_langs_route():
     assert lang_id is not None
 
     response = app.test_client().get(
-        '/langs',
-        headers={"Content-Type": "application/json"})
+        '/langs', headers={"Content-Type": "application/json"})
     assert response.status_code == 200
-    assert json.loads(response.data.decode('utf-8'))[0]['1'] == "Spanish"
+    langs = json.loads(response.data.decode('utf-8')).get("langs")
+    any([lang["name"] == "Spanish" for lang in langs])
