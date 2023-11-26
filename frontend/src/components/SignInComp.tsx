@@ -1,6 +1,7 @@
 import { BaseSyntheticEvent, useState } from "react";
 import { SyntheticEventData } from "react-dom/test-utils";
 import { useNavigate } from "react-router-dom";
+import { postData } from "../helper";
 
 interface AccountInfo {
     user: string,
@@ -11,20 +12,16 @@ function SignInComp () {
     const navigate = useNavigate();
     const [user, setUser] = useState("")
     const [pass, setPass] = useState("")
-    async function onSubmit() {
-        let response = await fetch("localhost:5000/login", {
-             method: "POST",
-             body: JSON.stringify({
+
+    const onSubmit = () => {
+        postData("http://127.0.0.1:5000/login", {
                  username: user,
                  password: pass,
-             }),
-             headers: {
-                 "Content-type": "application/json; charset=UTF-8"
-             }
-         });
-        let resJson = await response.json();
-        localStorage.setItem('id',resJson?.id);
-        navigate('/app', { replace: true });
+        }).then((res: any) => {
+            console.log(res)
+            localStorage.setItem('id', res.id);
+            navigate('/app', { replace: true });
+        });
      }
 
     const onUsernameChange = (data: BaseSyntheticEvent) => {
@@ -34,7 +31,7 @@ function SignInComp () {
         setPass(data?.target?.value )
     }
     return (
-        <form className='text-start' onSubmit={() => {onSubmit()}}>
+        <div className='text-start' onSubmit={() => {onSubmit()}}>
             <h5 className="card-title">Sign in with your Newts account</h5>
                 <div className="form-floating mb-3">
                     <input type="text" className="form-control is-lgreen" id="username" placeholder="john.doe" onChange={onUsernameChange} />
@@ -44,8 +41,8 @@ function SignInComp () {
                     <input type="password" className="form-control" id="password" placeholder="Password" onChange={onPasswordChange} />
                     <label htmlFor="floatingPassword">Password</label>
                 </div>
-            <button className='button' type="submit">Sign In</button>
-        </form>
+            <button className='button btn-dark' type="button" onClick={onSubmit}>Sign In</button>
+        </div>
     )
 }
 export default SignInComp

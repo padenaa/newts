@@ -42,11 +42,11 @@ function CreateAcctComp () {
                 <select className="form-select mb-3" aria-label="Default select example" onChange={onLanguageChange} defaultValue="0">
                     <option value="0" disabled={true}>Choose language</option>
                     <option value="1">Spanish</option>
-                    <option value="2">British</option>
-                    <option value="3">Australian</option>
+                    <option value="2">English</option>
+                    <option value="3">French</option>
                 </select>
 
-            <button className="button" type="button" onClick={onSubmit}>Create Account</button>
+            <button className="button btn-dark" type="button" onClick={onSubmit}>Create Account</button>
         </div>
     )
 }
