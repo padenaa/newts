@@ -42,7 +42,7 @@ def contact():
         sms_response = channel.send_sms_message({
             "messages": [{
                 "destinations": [{
-                    "to": data["phoneNumber"]
+                    "to": RECIPIENT,
                 }],
                 "text":
                 f"""Hi there! A Newts user asked for more information about your services.
