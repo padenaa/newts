@@ -14,6 +14,16 @@ def ratings():
                                                      is None):
             return {"error": "insufficient data provided"}, 400
         cursor = conn.cursor()
+        cursor.execute(
+            "SELECT id FROM ratings WHERE user_id = %s AND location_id = %s;",
+            (data["userId"], data["locationId"]))
+        existing_data = cursor.fetchone()
+        if (existing_data is not None) and (len(existing_data) >= 1):
+            cursor.execute("UPDATE ratings SET rating = %s WHERE id = %s;",
+                           (data["rating"], existing_data[0]))
+            conn.commit()
+            return {"id": existing_data[0]}, 201
+
         cursor.execute("SELECT language_id FROM users WHERE id = %s;",
                        (data["userId"], ))
         lang_data = cursor.fetchone()
