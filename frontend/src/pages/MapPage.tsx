@@ -50,7 +50,7 @@ function MapPage () {
                 <span className="input-group-text" id="addon-wrapping">🔍</span>
                 <input type="text" className="form-control" placeholder="Search" aria-label="Search" aria-describedby="addon-wrapping" onChange={onSearch} onKeyDown={(e) => {onSubmit(e)}}/>
             </div>
-            <Map markers={mapProps}/>
+            <Map markers={mapProps} setMarkers={setMapProps}/>
         </div>
     )
 }
