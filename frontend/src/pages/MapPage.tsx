@@ -35,8 +35,8 @@ function MapPage () {
         postData("http://127.0.0.1:5000/markers", {
             userId: id,
             search: searchQuery,
-            lat: 43.00976209681672,
-            long: -81.27264537179927
+            latitude: 43.00976209681672,
+            longitude: -81.27264537179927
         }).then((res: any) => {
             console.log(res)
             setMapProps(res.markers)

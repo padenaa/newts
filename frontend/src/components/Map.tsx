@@ -12,6 +12,9 @@ interface MarkerInfo {
 }
 
 function giveStars(n: number) {
+    if (n === 0) {
+        return "No ratings yet, be the first one to add one!"
+    }
     let res = ""
     for (let i=0; i < n; i++){
         res+="⭐"
