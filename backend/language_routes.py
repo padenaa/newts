@@ -21,3 +21,18 @@ def lang():
             return {"error": "error creating, try again"}, 400
         else:
             return {"id": id_data[0]}, 201
+        
+@language_routes.route('/langs', methods=['GET'])
+def langs():
+    if request.method == 'GET':
+        cursor = conn.cursor()
+        cursor.execute("SELECT distinct * FROM languages;")
+
+        data = cursor.fetchall()
+        conn.commit()
+        if (data is None) or (len(data) < 1):
+            return {"error": "error fetching from database, try again"}, 400
+        else:
+            return json.dumps({"langs": data}, 201)
+        
+
