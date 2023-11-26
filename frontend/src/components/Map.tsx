@@ -45,14 +45,14 @@ const StarRating = () => {
   };
 
 
-function Map() {
+function Map(props: {markers: MarkerInfo[]}) {
     const [message, setMessage] = useState("")
     const [phone, setPhone] = useState("")
     const [selectedId, setSelectedId] = useState(-1)
     const [modalOn, setModalOn] = useState(false)
     const [selectedRatingId, setSelectedRatingId] = useState(-1)
     const [ratingModalOn, setRatingModalOn] = useState(false)
-    let markerMap = [{id:1,coord:[43.00976209681672, -81.27264537179927], rating:4, name:"Western University", langs:["English"]}]
+    let markerMap = props.markers
 
     const onSubmitContact = () => {
         postData("http://127.0.0.1:5000/contact", {
