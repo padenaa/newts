@@ -1,46 +1,52 @@
-
-interface AccountInfo {
-    user: string,
-    pass: string,
-    lang: number
-}
+import { BaseSyntheticEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { postData } from "../helper";
 
 function CreateAcctComp () {
-    function onSubmit(data: AccountInfo) {
-       let response = fetch("https://jsonplaceholder.typicode.com/todos", {
-            method: "POST",
-            body: JSON.stringify({
-                username: data.user,
-                password: data.pass,
-                language: data.lang
-            }),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8"
-            }
+    const navigate = useNavigate();
+    const [user, setUser] = useState("")
+    const [pass, setPass] = useState("")
+    const [lang, setLang] = useState(-1)
+    const onSubmit = () => {
+        postData("http://127.0.0.1:5000/register", {
+                 username: user,
+                 password: pass,
+                 language: lang,
+        }).then((res: any) => {
+            console.log(res)
+            localStorage.setItem('id', res.id);
+            navigate('/app', { replace: true });
         });
+     }
+
+    const onUsernameChange = (data: BaseSyntheticEvent) => {
+        setUser(data?.target?.value )
+    }
+    const onPasswordChange = (data: BaseSyntheticEvent) => {
+        setPass(data?.target?.value )
+    }
+    const onLanguageChange = (data: BaseSyntheticEvent) => {
+        setLang(data?.target?.value)
     }
     return (
-        <div className='text-start'>
+        <div className='text-start' onSubmit={() => onSubmit()}>
             <h5 className="card-title">Create your Newts account</h5>
                 <div className="form-floating mb-3">
-                    <input type="text" className="form-control is-lgreen" id="floatingInput" placeholder="john.doe" />
+                    <input type="text" className="form-control is-lgreen" id="floatingInput" placeholder="john.doe" onChange={onUsernameChange}/>
                     <label htmlFor="floatingInput">Username</label>
                 </div>
                 <div className="form-floating mb-3">
-                    <input type="password" className="form-control" id="floatingPassword" placeholder="Password" />
+                    <input type="password" className="form-control" id="floatingPassword" placeholder="Password" onChange={onPasswordChange}/>
                     <label htmlFor="floatingPassword">Password</label>
                 </div>
-                <div className="dropdown mb-3">
-                    <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Language
-                    </button>
-                    <ul className="dropdown-menu">
-                        <li><a className="dropdown-item" href="#">English</a></li>
-                        <li><a className="dropdown-item" href="#">British</a></li>
-                        <li><a className="dropdown-item" href="#">Australian</a></li>
-                    </ul>
-                </div>
-            <button className='button'>Create Account</button>
+                <select className="form-select mb-3" aria-label="Default select example" onChange={onLanguageChange} defaultValue="0">
+                    <option value="0" disabled={true}>Choose language</option>
+                    <option value="1">Spanish</option>
+                    <option value="2">English</option>
+                    <option value="3">French</option>
+                </select>
+
+            <button className="button btn-dark" type="button" onClick={onSubmit}>Create Account</button>
         </div>
     )
 }
