@@ -19,5 +19,5 @@ def test_langs_route():
     response = app.test_client().get(
         '/langs',
         headers={"Content-Type": "application/json"})
-    assert response.status_code == 201
+    assert response.status_code == 200
     assert json.loads(response.data.decode('utf-8')).get('name') == "Language"

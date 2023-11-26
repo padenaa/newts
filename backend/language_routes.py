@@ -33,6 +33,6 @@ def langs():
         if (data is None) or (len(data) < 1):
             return {"error": "error fetching from database, try again"}, 400
         else:
-            return json.dumps({"langs": data}, 201)
+            return {"langs": data},200
         
 
