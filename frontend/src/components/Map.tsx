@@ -1,6 +1,7 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
-import { useState } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { BaseSyntheticEvent, useState } from "react";
 import './Map.css'
+import { postData } from '../helper'
 
 interface MarkerInfo {
     id: number,
@@ -45,12 +46,33 @@ const StarRating = () => {
 
 
 function Map() {
-
+    const [message, setMessage] = useState("")
+    const [phone, setPhone] = useState("")
     const [selectedId, setSelectedId] = useState(-1)
     const [modalOn, setModalOn] = useState(false)
     const [selectedRatingId, setSelectedRatingId] = useState(-1)
     const [ratingModalOn, setRatingModalOn] = useState(false)
     let markerMap = [{id:1,coord:[43.00976209681672, -81.27264537179927], rating:4, name:"Western University", langs:["English"]}]
+
+    const onSubmitContact = () => {
+        postData("http://127.0.0.1:5000/contact", {
+                 message: message,
+                 locationId: selectedId,
+                 userId: localStorage.getItem('id'),
+                 phoneNumber: phone
+        }).then((res: any) => {
+            console.log(res)
+            setModalOn(false)
+        });
+    }
+
+    function onPhone(e: BaseSyntheticEvent){
+        setPhone(e.target.value)
+    }
+
+    function onMessage(e: BaseSyntheticEvent){
+        setMessage(e.target.value)
+    }
 
     function ContactModal(){
         return (
@@ -65,13 +87,13 @@ function Map() {
                     </div>
                     <div className="modal-body">
                     <div className="form-group">
-                        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" className="form-control is-lgreen mb-3" id="floatingInput" placeholder="123-456-7890" autoCorrect='on'/>
-                        <textarea className="form-control" id="exampleFormControlTextarea1" rows={3} placeholder="I'd like to schedule..."></textarea>
+                        <input type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" className="form-control is-lgreen mb-3" id="floatingInput" placeholder="123-456-7890" autoCorrect='on' onClick={onPhone}/>
+                        <textarea className="form-control" id="exampleFormControlTextarea1" rows={3} placeholder="I'd like to schedule..." onClick={onMessage}></textarea>
                     </div>
 
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="button" style={{backgroundColor:"#AAB29F"}}>Send</button>
+                        <button type="button" className="button" style={{backgroundColor:"#AAB29F"}} onClick={onSubmitContact}>Send</button>
                     </div>
                     </div>
                 </div>
