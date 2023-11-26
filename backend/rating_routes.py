@@ -56,10 +56,17 @@ def avg_rating():
     if request.method == 'GET':
         args = request.args
         location_id = args.get("locationId", type=int)
+        user_id = args.get("userId", type=int)
         cursor = conn.cursor()
+        cursor.execute("SELECT language_id FROM users WHERE id = %s",
+                       (user_id, ))
+        lang_data = cursor.fetchone()
+        if not lang_data:
+            return {"error": "user has no language"}, 400
+        lang_id = lang_data[0]
         cursor.execute(
-            "SELECT AVG(r.rating) FROM locations l LEFT JOIN ratings r on l.id = r.location_id WHERE l.id = %s GROUP BY l.id;",
-            (location_id, ))
+            "SELECT AVG(r.rating) FROM locations l LEFT JOIN ratings r on l.id = r.location_id WHERE r.language_id = %s AND l.id = %s GROUP BY l.id;",
+            (lang_id, location_id))
         rating_data = cursor.fetchone()
         if (rating_data is None) or (len(rating_data) < 1):
             return {"error": "rating not available, try again later"}, 400

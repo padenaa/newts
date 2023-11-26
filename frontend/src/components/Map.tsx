@@ -33,7 +33,7 @@ const StarRating = (props: {locationId: number, setModalOn: any, setMarkers: any
             rating: index,
             locationId: props.locationId,
         }).then((res) => {
-            getData(`http://127.0.0.1:5000/avg_rating?locationId=${props.locationId}`).then((res) => {
+            getData(`http://127.0.0.1:5000/avg_rating?locationId=${props.locationId}&userId=${localStorage.getItem("id")}`).then((res) => {
                 props.setMarkers((prevMap: MarkerInfo[]) => {
                     let newMap = [...prevMap];
 
