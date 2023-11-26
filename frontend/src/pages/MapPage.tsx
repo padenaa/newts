@@ -1,6 +1,6 @@
 import Map from "../components/Map"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState, BaseSyntheticEvent } from 'react'
+import React, { useEffect, useState, BaseSyntheticEvent } from 'react'
 import { postData } from "../helper"
 
 interface MarkerInfo {
@@ -27,7 +27,7 @@ function MapPage () {
     }
 
     // western={[43.00976209681672, -81.27264537179927]}
-    const onSubmit = (e: KeyboardEvent) => {
+    const onSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key !== "Enter") {
             return
         }
