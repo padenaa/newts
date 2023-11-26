@@ -53,8 +53,7 @@ def test_ratings_route():
         rating_response.data.decode('utf-8')).get('id') is not None
 
     avg_rating_response = app.test_client().get(
-        f'/avg_rating?locationId={location_id}', )
+        f'/avg_rating?locationId={location_id}&userId={user_id}', )
     assert avg_rating_response.status_code == 200
     assert json.loads(
         avg_rating_response.data.decode('utf-8')).get('avg_rating') == '3.00'
-
