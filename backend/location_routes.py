@@ -42,7 +42,7 @@ def contact():
         sms_response = channel.send_sms_message({
             "messages": [{
                 "destinations": [{
-                    "to": RECIPIENT
+                    "to": data["phoneNumber"]
                 }],
                 "text":
                 f"""Hi there! A Newts user asked for more information about your services.
@@ -114,11 +114,13 @@ def markers():
             known_languages[id] = [row[0] for row in language_rows]
 
         loc_insert.execute(
-            "SELECT AVG(r.rating) FROM locations l LEFT JOIN ratings r on l.id = r.location_id WHERE r.language_id = %s GROUP BY l.id;",
-            (lang_id, ))
-        rating_rows = loc_insert.fetchall()
+            "SELECT AVG(r.rating) FROM locations l LEFT JOIN ratings r on l.id = r.location_id WHERE r.language_id = %s AND l.map_id = %s GROUP BY l.id;",
+            (lang_id, id))
+        rating_rows = loc_insert.fetchone()
         if rating_rows:
-            rating_avgs[id] = [row[0] for row in rating_rows]
+            rating_avgs[id] = round(rating_rows[0], 2)
+        else:
+            rating_avgs[id] = 0
 
     loc_insert.execute(
         "SELECT id, name, latitude, longitude, map_id FROM locations WHERE map_id in %s",
