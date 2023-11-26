@@ -87,14 +87,13 @@ def markers():
         headers=headers,
     )
     res_json = res.json()
-    print(res_json)
     all_map_ids = [row["id"] for row in res_json["businesses"]]
     loc_insert.execute("SELECT map_id FROM locations WHERE map_id IN %s;",
                        (tuple(all_map_ids), ))
     mapped_rows = loc_insert.fetchall()
     already_mapped = []
     if mapped_rows:
-        already_mapped = [row[0] for row in loc_insert.fetchall()]
+        already_mapped = [row[0] for row in mapped_rows]
     map_ids_to_add = list(set(all_map_ids) - set(already_mapped))
     rows_to_add = [
         row for row in res_json["businesses"] if row["id"] in map_ids_to_add
@@ -108,7 +107,7 @@ def markers():
     rating_avgs = {}
     for id in already_mapped:
         loc_insert.execute(
-            "SELECT l.name FROM languages l, location_languages o, locations n WHERE o.language_id = l.id AND n.id = o.location_id AND l.map_id = %s;",
+            "SELECT l.name FROM languages l, location_languages o, locations n WHERE o.language_id = l.id AND n.id = o.location_id AND n.map_id = %s;",
             (id, ))
         language_rows = loc_insert.fetchall()
         if language_rows:
