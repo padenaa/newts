@@ -1,12 +1,19 @@
-import { BaseSyntheticEvent, useState } from "react";
+import { BaseSyntheticEvent, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { postData } from "../helper";
+import { getData, postData } from "../helper";
 
 function CreateAcctComp () {
     const navigate = useNavigate();
     const [user, setUser] = useState("")
     const [pass, setPass] = useState("")
     const [lang, setLang] = useState(-1)
+    const [langList, setLangList] = useState([])
+    useEffect(()=>{
+        getData("http://127.0.0.1:5000/langs").then((res: any) => {
+            console.log(res)
+            setLangList(res.langs)
+        });
+    })
     const onSubmit = () => {
         postData("http://127.0.0.1:5000/register", {
                  username: user,
@@ -41,9 +48,7 @@ function CreateAcctComp () {
                 </div>
                 <select className="form-select mb-3" aria-label="Default select example" onChange={onLanguageChange} defaultValue="0">
                     <option value="0" disabled={true}>Choose language</option>
-                    <option value="1">Spanish</option>
-                    <option value="2">English</option>
-                    <option value="3">French</option>
+                    {langList.map((lang)=>{return <option value={lang[0]}>{lang[1]}</option>})}
                 </select>
 
             <button className="button btn-dark" type="button" onClick={onSubmit}>Create Account</button>
